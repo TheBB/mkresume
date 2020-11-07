@@ -1,0 +1,13 @@
+% -*- mode: latex -*-
+
+\cvsection{Honors and Awards}
+
+\begin{cvhonors}
+  \BLOCK{ for h in honors }
+  \cvhonor
+    {\VAR{h['role']}}
+    {\VAR{h['event']}}
+    {\VAR{h['location']}}
+    {\VAR{h['date']}}
+  \BLOCK{ endfor }
+\end{cvhonors}

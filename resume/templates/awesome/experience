@@ -1,0 +1,13 @@
+% -*- mode: latex -*-
+\cvsection{Work Experience}
+
+\begin{cventries}
+  \BLOCK{for entry in experience}
+  \cventry
+    {\VAR{entry['title']}}
+    {\VAR{entry['organization']}}
+    {\VAR{entry['location']}}
+    {\VAR{entry['dates']['from']} -- \VAR{entry['dates'].get('to','')}}
+    {\begin{cvitems} \BLOCK{for task in entry['tasks']} \item \VAR{task} \BLOCK{endfor} \end{cvitems}}
+  \BLOCK{endfor}
+\end{cventries}

@@ -1,0 +1,6 @@
+% -*- mode: latex -*-
+\cvsection{Summary}
+
+\begin{cvparagraph}
+\VAR{summary}
+\end{cvparagraph}
