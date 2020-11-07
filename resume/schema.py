@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from strictyaml import (
-    Optional, Map, Seq, Str,
+    Optional, Map, Seq, Str, Datetime,
     load, YAMLError,
 )
 
@@ -23,15 +23,18 @@ SCHEMA = Map({
         'title': Str(),
         'organization': Str(),
         'location': Str(),
-        'dates': Map({'from': Str(), Optional('to'): Str()}),
+        'dates': Map({
+            'from': Datetime(),
+            Optional('to'): Datetime(),
+        }),
         'tasks': Seq(Str()),
     })),
     Optional('honors'): Seq(Map({
         'role': Str(),
         'event': Str(),
         'location': Str(),
-        'date': Str(),
-    }))
+        'date': Datetime(),
+    })),
 })
 
 

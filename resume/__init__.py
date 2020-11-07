@@ -23,6 +23,9 @@ def tex_escape(s):
          .replace('%', r'\%')
     )
 
+def date(datetime, fmt: str) -> str:
+    return datetime.strftime(fmt.replace('~','%'))
+
 
 class Resume:
 
@@ -49,6 +52,10 @@ class Resume:
             line_statement_prefix=r'%%%',
             line_comment_prefix=r'%%#'
         )
+
+        env.filters.update({
+            'date': date,
+        })
 
         entry_pts: List[Tuple[str, str]] = []
         with open(template_path / 'entrypts') as f:

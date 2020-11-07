@@ -8,6 +8,6 @@
     {\VAR{h['role']}}
     {\VAR{h['event']}}
     {\VAR{h['location']}}
-    {\VAR{h['date']}}
+    {\VAR{h['date']|date('~Y')}}
   \BLOCK{ endfor }
 \end{cvhonors}
