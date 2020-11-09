@@ -36,6 +36,16 @@ RESUME_SCHEMA = Map({
         }),
         'tasks': Seq(Str()),
     })),
+    Optional('education'): Seq(Map({
+        'degree': Str(),
+        'institution': Str(),
+        'location': Str(),
+        'dates': Map({
+            'from': Datetime(),
+            Optional('to'): Datetime(),
+        }),
+        'description': Str(),
+    })),
     Optional('honors'): Seq(Map({
         'role': Str(),
         'event': Str(),

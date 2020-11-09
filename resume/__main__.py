@@ -46,6 +46,7 @@ def main(verbosity: str, rich: bool, path: Path, template: str):
     blocks = [
         'summary',
         'experience',
+        'education',
         'honors',
         'publications',
         'presentations',

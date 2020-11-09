@@ -1,0 +1,15 @@
+% -*- mode: latex -*-
+
+\cvsection{Education}
+
+\begin{cventries}
+  \BLOCK{ for e in education }
+  \cventry
+    {\VAR{e.degree}}
+    {\VAR{e.institution}}
+    {\VAR{e.location}}
+    {\VAR{e.dates.from|date('~b ~Y')} --
+      \BLOCK{if 'to' in e.dates}\VAR{e.dates.to|date('~b ~Y')}\BLOCK{endif}}
+    {\VAR{e.description}}
+  \BLOCK{ endfor }
+\end{cventries}
