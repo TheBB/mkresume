@@ -2,13 +2,20 @@ from pathlib import Path
 
 from strictyaml import (
     Optional, Map, Seq, Str, Datetime,
-    load, YAMLError,
+    load, YAMLError, Validator
 )
 
 import treelog as log
 
 
-SCHEMA = Map({
+TEMPLATE_SCHEMA = Map({
+    'entrypoints': Seq(Str()),
+    Optional('extra-files'): Seq(Str()),
+    Optional('bibtex-style'): Str(),
+})
+
+
+RESUME_SCHEMA = Map({
     'name': Map({'first': Str(), 'last': Str()}),
     'positions': Seq(Str()),
     'address': Str(),
@@ -35,12 +42,25 @@ SCHEMA = Map({
         'location': Str(),
         'date': Datetime(),
     })),
+    Optional('publications'): Map({
+        'bibfiles': Seq(Str()),
+        'keys': Seq(Str()),
+        Optional('boldnames'): Seq(Str()),
+    })
 })
 
 
-def load_and_validate(text: str, path: Path):
+def load_and_validate(text: str, path: Path, schema: Validator):
     try:
-        return load(text, SCHEMA, label=path).data
+        return load(text, schema, label=path).data
     except YAMLError as err:
         log.error(err)
         raise
+
+def load_template(filename: Path):
+    with open(filename, 'r') as f:
+        return load_and_validate(f.read(), filename, TEMPLATE_SCHEMA)
+
+def load_resume(filename: Path):
+    with open(filename, 'r') as f:
+        return load_and_validate(f.read(), filename, RESUME_SCHEMA)

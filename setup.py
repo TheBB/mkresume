@@ -21,6 +21,7 @@ setup(
         'click',
         'click-pathlib',
         'jinja2',
+        'pybtex',
         'strictyaml',
         'treelog',
     ],

@@ -47,10 +47,11 @@ def main(verbosity: str, rich: bool, path: Path, template: str):
         'summary',
         'experience',
         'honors',
+        'publications',
     ]
 
     try:
-        Resume(path).render({'blocks': blocks}, template, verbosity == 'debug')
+        Resume(path, template).render({'blocks': blocks}, verbosity == 'debug')
     except Exception as err:
         if verbosity == 'debug':
             traceback.print_exc()

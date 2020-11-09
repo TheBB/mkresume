@@ -1,0 +1,4 @@
+bibtex-style: unsrt.bst
+entrypoints:
+  - resume.tex
+  - awesome-cv.cls
