@@ -48,6 +48,7 @@ def main(verbosity: str, rich: bool, path: Path, template: str):
         'experience',
         'honors',
         'publications',
+        'presentations',
     ]
 
     try:

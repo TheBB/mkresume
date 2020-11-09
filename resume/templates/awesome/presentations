@@ -1,0 +1,13 @@
+% -*- mode: latex -*-
+
+\cvsection{Presentations and posters}
+
+\begin{cvhonors}
+  \BLOCK{ for h in presentations }
+  \cvhonor
+    {\VAR{h.role}}
+    {\VAR{h.title}}
+    {\VAR{h.event}}
+    {\VAR{h.date|date('~Y')}}
+  \BLOCK{ endfor }
+\end{cvhonors}

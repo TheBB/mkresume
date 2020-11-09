@@ -46,7 +46,13 @@ RESUME_SCHEMA = Map({
         'bibfiles': Seq(Str()),
         'keys': Seq(Str()),
         Optional('boldnames'): Seq(Str()),
-    })
+    }),
+    Optional('presentations'): Seq(Map({
+        'role': Str(),
+        'title': Str(),
+        'event': Str(),
+        'date': Datetime(),
+    })),
 })
 
 
