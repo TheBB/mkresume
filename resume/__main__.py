@@ -50,6 +50,7 @@ def main(verbosity: str, rich: bool, path: Path, template: str):
         'honors',
         'publications',
         'presentations',
+        'projects',
     ]
 
     try:

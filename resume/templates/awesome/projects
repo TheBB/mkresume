@@ -1,0 +1,14 @@
+% -*- mode: latex -*-
+\cvsection{Projects}
+
+\begin{cventries}
+  \BLOCK{for p in projects}
+  \cventry
+    {\BLOCK{for pp in p.partners}\BLOCK{if not loop.first}\BLOCK{if loop.last} and\BLOCK{else},\BLOCK{endif} \BLOCK{endif}\VAR{pp}\BLOCK{endfor}}
+    {\VAR{p.title}\BLOCK{if 'subtitle' in p}: \VAR{p.subtitle}\BLOCK{endif}}
+    {\VAR{p.role}}
+    {\VAR{p.dates.from|date('~b ~Y')} --
+      \BLOCK{if 'to' in p.dates}\VAR{p.dates.to|date('~b ~Y')}\BLOCK{endif}}
+    {\VAR{p.description}}
+  \BLOCK{endfor}
+\end{cventries}

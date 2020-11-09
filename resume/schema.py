@@ -63,6 +63,17 @@ RESUME_SCHEMA = Map({
         'event': Str(),
         'date': Datetime(),
     })),
+    Optional('projects'): Seq(Map({
+        'title': Str(),
+        'role': Str(),
+        Optional('subtitle'): Str(),
+        Optional('partners'): Seq(Str()),
+        'dates': Map({
+            'from': Datetime(),
+            Optional('to'): Datetime(),
+        }),
+        'description': Str(),
+    }))
 })
 
 
