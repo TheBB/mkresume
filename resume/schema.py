@@ -73,6 +73,16 @@ RESUME_SCHEMA = Map({
             Optional('to'): Datetime(),
         }),
         'description': Str(),
+    })),
+    Optional('committees'): Seq(Map({
+        'role': Str(),
+        'committee': Str(),
+        'location': Str(),
+        Optional('date'): Datetime(),
+        Optional('dates'): Map({
+            'from': Datetime(),
+            Optional('to'): Datetime(),
+        }),
     }))
 })
 
