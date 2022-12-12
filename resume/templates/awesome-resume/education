@@ -8,8 +8,8 @@
     {\VAR{e.degree}}
     {\VAR{e.institution}}
     {\VAR{e.location}}
-    {\VAR{e.dates.from|date('~b ~Y')} --
-      \BLOCK{if 'to' in e.dates}\VAR{e.dates.to|date('~b ~Y')}\BLOCK{endif}}
+    {\VAR{e.dates.begin|date('~b ~Y')} --
+      \BLOCK{if e.dates.end}\VAR{e.dates.end|date('~b ~Y')}\BLOCK{else}present\BLOCK{endif}}
     {\VAR{e.description}}
   \BLOCK{ endfor }
 \end{cventries}

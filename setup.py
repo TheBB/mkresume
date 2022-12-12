@@ -20,10 +20,11 @@ setup(
     install_requires=[
         'click',
         'click-pathlib',
+        'goldpy>=2',
         'jinja2',
+        'pydantic',
         'pybtex',
-        'strictyaml',
-        'treelog',
+        'rich',
     ],
     entry_points={
         'console_scripts': [

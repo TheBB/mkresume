@@ -1,0 +1,11 @@
+% -*- mode: latex -*-
+
+\cvsection{Skills}
+
+\begin{cvskills}
+  \BLOCK{ for s in skills }
+  \cvskill
+    {\VAR{s.title}}
+    {\VAR{s.text}}
+  \BLOCK{ endfor }
+\end{cvskills}

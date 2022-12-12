@@ -1,0 +1,12 @@
+% -*- mode: latex -*-
+\cvsection{Committees}
+
+\begin{cvhonors}
+  \BLOCK{for c in committees}
+  \cvhonor
+    {\VAR{c.role}}
+    {\VAR{c.committee}}
+    {\VAR{c.location}}
+    {\BLOCK{if c.dates.begin is defined}\VAR{c.dates.begin|date('~Y')} -- \BLOCK{if c.dates.end}\VAR{c.dates.end|date('~Y')}\BLOCK{else}present\BLOCK{endif}\BLOCK{else}\VAR{c.dates|date('~Y')}\BLOCK{endif}}
+  \BLOCK{endfor}
+\end{cvhonors}

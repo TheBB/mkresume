@@ -7,8 +7,8 @@
     {\VAR{entry.title}}
     {\VAR{entry.organization}}
     {\VAR{entry.location}}
-    {\VAR{entry.dates.from|date('~b ~Y')} --
-      \BLOCK{if 'to' in entry.dates}\VAR{entry.dates.to|date('~b ~Y')}\BLOCK{endif}}
+    {\VAR{entry.dates.begin|date('~b ~Y')} --
+      \BLOCK{if entry.dates.end}\VAR{entry.dates.end|date('~b ~Y')}\BLOCK{else}present\BLOCK{endif}}
     {\begin{cvitems} \BLOCK{for task in entry.tasks} \item \VAR{task} \BLOCK{endfor} \end{cvitems}}
   \BLOCK{endfor}
 \end{cventries}

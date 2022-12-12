@@ -1,0 +1,11 @@
+% -*- mode: latex -*-
+
+\cvsection{Hobbies}
+
+\begin{cvskills}
+  \BLOCK{ for s in hobbies }
+  \cvskill
+    {\VAR{s.title}}
+    {\VAR{s.text}}
+  \BLOCK{ endfor }
+\end{cvskills}

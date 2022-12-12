@@ -1,15 +1,18 @@
+from __future__ import annotations
+
 from pathlib import Path
 import shutil
 from subprocess import run, PIPE
 from tempfile import TemporaryDirectory
 
+import goldpy
 from jinja2 import FileSystemLoader
 from jinja_vanish import DynAutoEscapeEnvironment, markup_escape_func
 
-from typing import Dict, Any, List, Tuple, Iterable, Optional
+from typing import Dict, Any, Iterable
 
 from .bibtex import bibtex_render
-from .schema import load_template, load_resume
+from . import schema
 
 
 EXTRA_FILES = [
@@ -28,39 +31,50 @@ def date(datetime, fmt: str) -> str:
     return datetime.strftime(fmt.replace('~','%'))
 
 
-class Template:
+class Template(schema.Template):
 
     path: Path
-    spec: Dict
 
-    def __init__(self, path: Path):
-        self.path = path
-        self.spec = load_template(path / 'template.yaml')
-
-    @property
-    def entrypoints(self) -> Iterable[str]:
-        return self.spec.get('entrypoints', [])
+    @classmethod
+    def from_file(cls, path: Path) -> Template:
+        spec = goldpy.eval_file(str(path / 'template.gold'))
+        return cls.parse_obj({
+            **spec,
+            'path': path,
+        })
 
     @property
     def files(self) -> Iterable[Path]:
-        for filename in self.spec.get('extra-files', []):
+        for filename in self.extra_files:
             yield self.path / filename
 
     @property
-    def bibtex_style(self) -> Path:
-        return self.path / self.spec['bibtex-style']
+    def bibtex(self) -> Path:
+        return self.path / self.bibtex_style
 
 
-class Resume:
+class Resume(schema.Resume):
 
     template: Template
+    extra_path: Path
 
-    def __init__(self, resume_path: Path, template_path: Path):
-        self.template = Template(Path(__file__).parent / 'templates' / template_path)
-        self.extra_path = Path(__file__).parent / 'extra'
-        self.spec = load_resume(resume_path)
+    @classmethod
+    def from_file(cls, resume_path: Path, template_path: Path) -> Resume:
+        template = Template.from_file(Path(__file__).parent / 'templates' / template_path)
+        extra_path = Path(__file__).parent / 'extra'
+        spec = goldpy.eval_file(str(resume_path))
+        return cls.parse_obj({
+            **spec,
+            'template': template,
+            'extra_path': extra_path,
+        })
 
-    def render(self, context: Dict[str, Any], debug: bool = False):
+    def render(self, out: Path, mode: str, context: Dict[str, Any], debug: bool = False):
+        assert mode in self.template.modes
+
+        if mode == 'cover':
+            assert self.cover
+
         env = DynAutoEscapeEnvironment(
             autoescape=True,
             escape_func=tex_escape,
@@ -80,20 +94,24 @@ class Resume:
         })
 
         context = dict(context)
-        context.update(self.spec)
+        context.update(self)
         context.update({
             'fontpath': str(Path(__file__).parent / 'extra' / 'fonts') + '/',
         })
 
-        if 'publications' in context:
+        if self.publications:
             context['publications'] = bibtex_render(
-                self.template.bibtex_style,
-                map(Path, context['publications']['bibfiles']),
-                context['publications']['keys']
+                self.template.bibtex,
+                map(Path, self.publications.bibfiles),
+                self.publications.keys,
+                self.publications.boldnames,
             )
 
         with TemporaryDirectory() as tmp:
             tmp = Path(tmp)
+
+            if self.photo:
+                shutil.copy(self.photo, tmp)
 
             for source in self.template.files:
                 shutil.copy(source, tmp)
@@ -108,5 +126,5 @@ class Resume:
             kwargs = {}
             if not debug:
                 kwargs['stdout'] = kwargs['stderr'] = PIPE
-            run(['latexmk', '-pdflua', '-interaction=nonstopmode', 'resume.tex'], cwd=tmp, **kwargs).check_returncode()
-            shutil.copy(tmp / 'resume.pdf', '.')
+            run(['latexmk', '-pdflua', '-interaction=nonstopmode', f'{mode}.tex'], cwd=tmp, **kwargs).check_returncode()
+            shutil.copy(tmp / f'{mode}.pdf', out)

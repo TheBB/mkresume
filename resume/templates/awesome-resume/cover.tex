@@ -1,14 +1,13 @@
-% -*- mode: latex -*-
 %!TEX TS-program = xelatex
 %!TEX encoding = UTF-8 Unicode
-% Awesome CV LaTeX Template for CV/Resume
+% Awesome CV LaTeX Template for Cover Letter
 %
 % This template has been downloaded from:
 % https://github.com/posquit0/Awesome-CV
 %
-% Author:
+% Authors:
 % Claud D. Park <posquit0.bj@gmail.com>
-% http://www.posquit0.com
+% Lars Richter <mail@ayeks.de>
 %
 % Template license:
 % CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/)
@@ -42,7 +41,7 @@
 % \definecolor{lighttext}{HTML}{999999}
 
 % Set false if you don't want to highlight section with awesome color
-\setbool{acvSectionColorHighlight}{false}
+\setbool{acvSectionColorHighlight}{true}
 
 % If you would like to change the social information separator from a pipe (|) to something else
 \renewcommand{\acvHeaderSocialSep}{\quad\textbar\quad}
@@ -53,10 +52,12 @@
 %	Comment any of the lines below if they are not required
 %-------------------------------------------------------------------------------
 % Available options: circle|rectangle,edge/noedge,left/right
-% \photo[rectangle,edge,right]{./examples/profile}
-\name{\VAR{name['first']}}{\VAR{name['last']}}
+\BLOCK{ if photo }
+\photo[circle,noedge,left]{\VAR{photo}}
+\BLOCK{ endif }
+\name{\VAR{name.first}}{\VAR{name.last}}
 \position{\BLOCK{for pos in positions}\BLOCK{if not loop.first}{\enskip\cdotp\enskip}\BLOCK{endif}\VAR{pos}\BLOCK{endfor}}
-\address{\VAR{address}}
+\address{\BLOCK{for line in address}\BLOCK{if not loop.first}, \BLOCK{endif}\VAR{line}\BLOCK{endfor}}
 
 \mobile{\VAR{phone}}
 \email{\VAR{email}}
@@ -70,7 +71,7 @@
 % \reddit{reddit-id}
 % \medium{madium-id}
 % \googlescholar{googlescholar-id}{name-to-display}
-% \firstname and \lastname will be used
+%% \firstname and \lastname will be used
 % \googlescholar{googlescholar-id}{}
 % \extrainfo{extra informations}
 
@@ -78,35 +79,59 @@
 
 
 %-------------------------------------------------------------------------------
+%	LETTER INFORMATION
+%	All of the below lines must be filled out
+%-------------------------------------------------------------------------------
+% The company being applied to
+\recipient
+  {\VAR{cover.recipient}}
+  {\BLOCK{for line in cover.address}\BLOCK{if not loop.first}\\\BLOCK{endif}\VAR{line}\BLOCK{endfor}}
+% The date on the letter, default is the date of compilation
+\letterdate{\today}
+% The title of the letter
+\lettertitle{\VAR{cover.title}}
+% How the letter is opened
+\letteropening{\VAR{cover.opening}}
+% How the letter is closed
+\letterclosing{\VAR{cover.closing}}
+% Any enclosures with the letter
+\BLOCK{if cover.attachments}
+\letterenclosure[Attached]{\BLOCK{for line in cover.attachments}\BLOCK{if not loop.first}, \BLOCK{endif}\VAR{line}\BLOCK{endfor}}
+\BLOCK{endif}
+
+
+%-------------------------------------------------------------------------------
 \begin{document}
 
 % Print the header with above personal informations
 % Give optional argument to change alignment(C: center, L: left, R: right)
-\makecvheader[C]
+\makecvheader[R]
 
 % Print the footer with 3 arguments(<left>, <center>, <right>)
 % Leave any of these blank if they are not needed
 \makecvfooter
   {\today}
-  {\VAR{name.first} \VAR{name.last}~~~·~~~Résumé}
-  {\thepage}
+  {\VAR{name.first} \VAR{name.last}~~~·~~~Cover Letter}
+  {}
 
+% Print the title with above letter informations
+\makelettertitle
 
 %-------------------------------------------------------------------------------
-%	CV/RESUME CONTENT
-%	Each section is imported separately, open each file in turn to modify content
+%	LETTER CONTENT
 %-------------------------------------------------------------------------------
-\BLOCK{for block in blocks}
-  \BLOCK{include block}
+\begin{cvletter}
+
+\BLOCK{for section in cover.sections}
+\lettersection{\VAR{section.title}}
+\VAR{section.text}
 \BLOCK{endfor}
-% \input{resume/experience.tex}
-% \input{resume/honors.tex}
-% \input{resume/presentation.tex}
-% \input{resume/writing.tex}
-% \input{resume/committees.tex}
-% \input{resume/education.tex}
-% \input{resume/extracurricular.tex}
+
+\end{cvletter}
 
 
 %-------------------------------------------------------------------------------
+% Print the signature and enclosures with above letter informations
+\makeletterclosing
+
 \end{document}

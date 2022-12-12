@@ -1,0 +1,9 @@
+{
+  bibtex-style: "unsrt.bst",
+  modes: ["resume", "cover"],
+  entrypoints: [
+    "resume.tex",
+    "cover.tex",
+    "awesome-cv.cls",
+  ]
+}

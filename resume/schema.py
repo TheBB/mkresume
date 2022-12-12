@@ -1,103 +1,129 @@
+import logging
 from pathlib import Path
+from datetime import date
 
-from strictyaml import (
-    Optional, Map, Seq, Str, Datetime,
-    load, YAMLError, Validator
-)
+from typing import List, Optional, Union
 
-import treelog as log
-
-
-TEMPLATE_SCHEMA = Map({
-    'entrypoints': Seq(Str()),
-    Optional('extra-files'): Seq(Str()),
-    Optional('bibtex-style'): Str(),
-})
+import goldpy
+from pydantic import BaseModel, Field
 
 
-RESUME_SCHEMA = Map({
-    'name': Map({'first': Str(), 'last': Str()}),
-    'positions': Seq(Str()),
-    'address': Str(),
-    'phone': Str(),
-    'email': Str(),
-    Optional('website'): Str(),
-    Optional('github'): Str(),
-    Optional('linkedin'): Str(),
-    Optional('quote'): Str(),
-    Optional('summary'): Str(),
-    Optional('experience'): Seq(Map({
-        'title': Str(),
-        'organization': Str(),
-        'location': Str(),
-        'dates': Map({
-            'from': Datetime(),
-            Optional('to'): Datetime(),
-        }),
-        'tasks': Seq(Str()),
-    })),
-    Optional('education'): Seq(Map({
-        'degree': Str(),
-        'institution': Str(),
-        'location': Str(),
-        'dates': Map({
-            'from': Datetime(),
-            Optional('to'): Datetime(),
-        }),
-        'description': Str(),
-    })),
-    Optional('honors'): Seq(Map({
-        'role': Str(),
-        'event': Str(),
-        'location': Str(),
-        'date': Datetime(),
-    })),
-    Optional('publications'): Map({
-        'bibfiles': Seq(Str()),
-        'keys': Seq(Str()),
-        Optional('boldnames'): Seq(Str()),
-    }),
-    Optional('presentations'): Seq(Map({
-        'role': Str(),
-        'title': Str(),
-        'event': Str(),
-        'date': Datetime(),
-    })),
-    Optional('projects'): Seq(Map({
-        'title': Str(),
-        'role': Str(),
-        Optional('subtitle'): Str(),
-        Optional('partners'): Seq(Str()),
-        'dates': Map({
-            'from': Datetime(),
-            Optional('to'): Datetime(),
-        }),
-        'description': Str(),
-    })),
-    Optional('committees'): Seq(Map({
-        'role': Str(),
-        'committee': Str(),
-        'location': Str(),
-        Optional('date'): Datetime(),
-        Optional('dates'): Map({
-            'from': Datetime(),
-            Optional('to'): Datetime(),
-        }),
-    }))
-})
+class Name(BaseModel):
+    first: str
+    last: str
 
 
-def load_and_validate(text: str, path: Path, schema: Validator):
-    try:
-        return load(text, schema, label=path).data
-    except YAMLError as err:
-        log.error(err)
-        raise
+class Dates(BaseModel):
+    begin: date
+    end: Optional[date]
 
-def load_template(filename: Path):
-    with open(filename, 'r') as f:
-        return load_and_validate(f.read(), filename, TEMPLATE_SCHEMA)
 
-def load_resume(filename: Path):
-    with open(filename, 'r') as f:
-        return load_and_validate(f.read(), filename, RESUME_SCHEMA)
+class Experience(BaseModel):
+    title: str
+    organization: str
+    location: str
+    dates: Dates
+    tasks: List[str]
+
+
+class Education(BaseModel):
+    degree: str
+    institution: str
+    location: str
+    dates: Dates
+    description: str
+
+
+class Honor(BaseModel):
+    role: str
+    event: str
+    location: str
+    date: date
+
+
+class Committee(BaseModel):
+    role: str
+    committee: str
+    location: str
+    dates: Union[date, Dates]
+
+
+class Presentation(BaseModel):
+    role: str
+    title: str
+    event: str
+    date: date
+
+
+class Project(BaseModel):
+    title: str
+    role: str
+    subtitle: Optional[str]
+    partners: List[str] = []
+    dates: Dates
+    description: str
+
+
+class Publications(BaseModel):
+    bibfiles: List[str]
+    keys: List[str]
+    boldnames: List[str] = []
+
+
+class Section(BaseModel):
+    title: str
+    text: str
+
+
+class Cover(BaseModel):
+    recipient: str
+    address: List[str]
+    title: str
+    opening: str
+    closing: str
+    attachments: List[str] = []
+    sections: List[Section]
+
+
+class Skill(BaseModel):
+    title: str
+    text: str
+
+
+class Hobby(BaseModel):
+    title: str
+    text: str
+
+
+class Resume(BaseModel):
+    photo: Optional[str]
+    name: Name
+    positions: List[str]
+    address: List[str]
+    phone: str
+    email: str
+
+    cover: Optional[Cover]
+
+    website: Optional[str]
+    github: Optional[str]
+    linkedin: Optional[str]
+    quote: Optional[str]
+    summary: Optional[str]
+
+    experience: List[Experience] = []
+    education: List[Education] = []
+    honors: List[Honor] = []
+    committees: List[Committee] = []
+    presentations: List[Presentation] = []
+    projects: List[Project] = []
+    publications: Optional[Publications]
+    skills: List[Skill] = []
+    hobbies: List[Hobby] = []
+
+
+class Template(BaseModel):
+    bibtex_style: str = Field(alias='bibtex-style')
+    extra_files: List[str] = Field(alias='extra-files', default_factory=list)
+    entrypoints: List[str] = []
+    modes: List[str]
